@@ -1,47 +1,77 @@
 # Class UML
 
-## Waffle Class Structure
-
-![Class UML](https://img.plantuml.biz/plantuml/svg/bPB1QWCX48RlynJ3df90X5nBieJc7EYjPxDgAwWJr9BqxJkwkfIq5EfXmPb__lbcrcFACkOFx-3TAerU-ukE2RBDJkEhDCPf09YSJ0cVAUD-hsoQA2fn_Hn729GrEcqoaYbvG3ucaiSkq_UCrbyfPfp8UnbKggBwkR3ZOOaBDbW98TQWWy9YtJkVwEtFpfp_P-Tb8YvTBG1yMJ_LV3cCyeEahwHnEQj3MGev9xtiM3nMPf02LWNGC6PLAQvbXnOGi-htqS-dbsO2C3V7pLRHBMp7kl37M1C_Xh_PbDyux0QadXjsGco6kaI08mFmS_W2)
+![Class UML](https://img.plantuml.biz/plantuml/svg/VLJBRjim4BppAnOyEQqje5SXCTmcbm0fSadHWn4OZ4IvH6YH85U8WzJ_tkL3ZoYfTI9tPdTdXwGs7eN3xg0PAjGIVekcqRA4QosyXry_xnXZLbJFOY-XLhuoheRBovkqAkphUWrl3EYhOWA_ragso45uoAHT2aLIQr22bWs2QJx36sSEGnjriCOXJE3SAEpXAWEBeYWk8Y3REZPW9yQIcZJCE82niXMAzD_Jullj6Us9y5_f7-6eFDVFmXFf4-49E2VymHZzmnopl1Nia0A-96igt7fqoyXu76j_XS289UdiXDRYYGPFo5xYeXK7EbJA93YaPiXRMVa5nRJok0tL7qb47DMf_PyuQzPIbjZdrPBEHw1nq7cojHnbR09dzsIEHPGJOz4yQd_5IHrV3h5Q-iefYygqSuXsSNsHspLfEj8PaC4kLWiKes7PhJHLyYe7v55M7P81zx6TqDlUec7S_cH3eR8C5M8k3yfvT2xj9wgdOIiS4L4wJz7jCCZRi9eLMxu7FbITuVXgfoh2TreEDgLxm9t4peNyiUkvmlEYfucnBBqSM7LszNSzVwazM9kNThMUFOOCycySJCy8ctoD61lkKxhKSsPHV4baKh4XHVHh-WS0)
 
 <!-- ```plantuml
 @startuml
-hide members
-title Waffle
+title Waffle: Class UML
 
-class Bot <<discord.py>>
-note left of Bot
-    from discord.ext import commands
-    
-    bot = commands.Bot(...)
-end note
 
-class Cog <<discord.py>>
-note left of Cog
-    from discord.ext import commands
+package discord <<Discord.py>> {
+    class "Client" as Discord_Client
+    note left of Discord_Client
+    from discord import Client
     
-    class BotCog(commands.Cog):
-        ...
-end note
+    client = Client(...)
+    end note
+}
 
 class Waffle
 
-class Client <<ollama>>
-note bottom of Client
-import ollama
+package openai <<OpenAI>> {
+    class "Client" as OpenAI_Client
+    note left of OpenAI_Client
+    from openai import OpenAI
+    
+    client = OpenAI(...)
+    end note
+}
 
-client = ollama.Client(...)
+class ToolBox {
+    - _tools: dict[str, Tool]
+    
+    + tool(...): Callable
+    + get(name: str): Tool
+    + specs(): list[dict]
+}
+note right of ToolBox::tool
+    decorator usage:
+    
+    @tool_box.tool(
+        name="...",
+        description="...",
+        ...
+    )
+    def tool(): ...
 end note
 
-class MCPClient
+dataclass Tool {
+    + spec: dict
+    + execute: Optional[Callable]
+}
+note left of Tool::spec
+    "name": str
+    "description": str
+    "parameters": [
+        {
+            "name": str,
+            "description": str,
+            "type": str
+        }, ...
+    ]
+    "return": {
+        "description": str,
+        "type": str
+    }
+end note
 
-Waffle *-down-> Bot
-Waffle *-down-> Client
-Waffle *-down-> MCPClient
 
-Bot "1" o-down-> "1..*" Cog
+Waffle -up-|> Discord_Client
+Waffle -down-> OpenAI_Client
+Waffle "1" o-down-> "1" ToolBox
+
+ToolBox::_tools "1" o-down-> "1..*" Tool
+
 
 @enduml
 ``` -->
-
-<!-- ## Waffle MCP Server Class Structure -->
